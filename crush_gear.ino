@@ -15,10 +15,9 @@ void setup()
 	pinMode(IR[1], INPUT);
 	pinMode(IR[2], INPUT);
 	pinMode(M1, OUTPUT);   
-        pinMode(M2, OUTPUT); 
-        
-        // stop the car first
-        analogWrite(E1, 0);
+    pinMode(M2, OUTPUT); 
+    // stop the car first
+    analogWrite(E1, 0);
 	analogWrite(E2, 0);
 }
 
@@ -34,16 +33,40 @@ void loop()	{
 	Serial.print(", ");
 	Serial.println(digitalRead(IR[2]));
 
-        //Step 2: test the direction of motor
+	//Step 2: test the direction of motor
 	//        adjust the M1 and M2 if the motor is not forward at first
-	forward();  
-	
+	//forward();  
+
+	//Step 3: add 2 interrup, make sure the car will not rush out the region
+	if(digitalRead(line_detect[0]) == LOW){		//front line detect trigger
+	    backward();
+	    delay(500);
+	    turn_left();
+	    delay(800);
+	    forward();
+	}
+	if(digitalRead(line_detect[1]) == LOW){		//back line detect trigger
+	    forward();
+	}
 }
 
 void forward() {
+  	digitalWrite(M1, HIGH);
+	digitalWrite(M2, HIGH);
+	analogWrite(E1, 255);
+	analogWrite(E2, 255);
+}
+
+void turn_left()  {
+  	digitalWrite(M1, LOW);
+	digitalWrite(M2, HIGH);
+	analogWrite(E1, 127);
+	analogWrite(E2, 127);
+}
+
+void backward()	{
 	digitalWrite(M1, LOW);
 	digitalWrite(M2, LOW);
 	analogWrite(E1, 255);
 	analogWrite(E2, 255);
 }
-
